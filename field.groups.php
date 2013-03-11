@@ -57,6 +57,9 @@ class Field_groups
     
 		foreach ($groups as $group)
 		{
+			// Skip admins for now
+			if ($group->name == 'admin') continue;
+			
 			// Form dropdown
 			$group_options[$group->id] = $group->name;
 		}
