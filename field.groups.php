@@ -41,7 +41,7 @@ class Field_groups
 		return form_multiselect($data['form_slug'].'[]', $options['value'], $data['value'], $option['extra']);
 	}
 
-	public function pre_save($input = '')
+	public function pre_save($input = array())
 	{
 		return '*'.implode('*', $input).'*';
 	}
@@ -60,6 +60,7 @@ class Field_groups
 				->get('groups')
 				->result();
 
+		$return = array();
 		foreach($groups as $group)
 		{
 			if(in_array($group->id, $ids))
