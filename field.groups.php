@@ -41,14 +41,39 @@ class Field_groups
 		return form_multiselect($data['form_slug'].'[]', $options['value'], $data['value'], $option['extra']);
 	}
 
-	public function pre_save($input)
+	public function pre_save($input = '')
 	{
-		return isset($input) ? '*'.implode('*', $input).'*' : null;
+		return '*'.implode('*', $input).'*';
 	}
 
-	public function pre_output($input)
+	public function pre_output($input = '')
 	{
-		return isset($input) ? explode('*', substr($input, 1, -1)) : array(null);
+		if($input == '*0*')
+		{
+			return lang('global:select-all');
+		}
+
+		$ids = explode('*', substr($input, 1, -1));
+
+		$groups = $this->CI->db
+				->where_in('id', $ids)
+				->get('groups')
+				->result();
+
+		foreach($groups as $group)
+		{
+			if(in_array($group->id, $ids))
+			{
+				$return[$group->id] = '<li>'.$group->description.'</li>';
+			}
+		}
+
+		return '<ul>'.implode("\r\n",$return).'</ul>';
+	}
+
+	public function pre_output_plugin($input = '')
+	{
+		return explode('*', substr($input, 1, -1));
 	}
 
 	private function make_dropdown()
